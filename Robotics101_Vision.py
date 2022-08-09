@@ -5,10 +5,11 @@ import picamera
 from math import atan,sin,cos,pi,floor
 import imutils
 
+
 # Wherever it says "None" the intention is for you to fill in your own values and names :)
 
 
-kernel = np.ones((None,None))                       # Define variable for image noise filtering (covered more later)
+kernel = np.ones((10,10))                       # Define variable for image noise filtering (covered more later)
 
 
 with picamera.PiCamera() as camera:                 # Start up the picamera using the PiCamera library. For pi4s this may be a bit out of date and the libcamera library is potentially better. For the 3B+ Pis we are using they're great.
@@ -33,34 +34,53 @@ def get_frame(frame):
 
     frame = cv2.GaussianBlur(frame, (3,3),0)        # Blur frame to decrease sharp edges
 
-    frame = cv2.rotate(frame, None)                 # Use this function if you want to rotate the image a certain way
+    #frame = cv2.rotate(frame, cv2.rotate_)                 # Use this function if you want to rotate the image a certain way
                                                     # None is the OpenCV code for rotating an image. See their cv2.rotatate documentation.
 
-    hsv_frame = cv2.cvtColor(frame, None)           # Change the colour space using the cvtColor function
+    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)           # Change the colour space using the cvtColor function
                                                     # <Insert OpenCV colour code for converstion>
 
-    return None                                     # Return both the frame and the HSV_frame. You only need the original frame if you intend to draw on it (like bounding boxes, frame rates, etc.)
+    return frame                                     # Return both the frame and the HSV_frame. You only need the original frame if you intend to draw on it (like bounding boxes, frame rates, etc.)
 
 
 def find_objects(hsv_frame, frame=None):
     '''Implement the main image processing pipeline for finding objects. Takes the hsv_frame (and optionally the original frame if you wish to draw on it)
     '''
+         #128,255
+    #118-180, 0-4
+    #bitwise or
+    #64.81
+    #133,111
+    lower_bound_1 = (175,50,20)
+    upper_bound_1 = (180,255,255)
+    
+    lower_bound_2 = (0,50,20)
+    upper_bound_2 = (5,255,255)
+    
+    binary_image_1 = cv2.inRange(hsv_frame,lower_bound_1,upper_bound_1)
+    binary_image_2 = cv2.inRange(hsv_frame,lower_bound_2,upper_bound_2)
+    
+    #bound_1=cv2.bitwise_or(lower_bound_1,upper_bound_1)
+    
+    # The lower and upper bound for your inRange function. This is the pixel data range that you consider to be indicative of an object.
 
-    lower_bound = (None,None,None)                  # The lower and upper bound for your inRange function. This is the pixel data range that you consider to be indicative of an object.
-    upper_bound = (None,None,None)                  # (h,s,v)
+     
+    
+    binary_image = cv2.bitwise_or(binary_image_1,binary_image_2)
+   # (h,s,v)
                                                     # (h,s,v)
                                                     
-    binary_image = cv2.inRange(None,None,None)      # Create a "binary image" using your colour space ranges. Anything inside the range specified will be assigned a 1 and anything outside will be a 0 in terms of the image data.
+        # Create a "binary image" using your colour space ranges. Anything inside the range specified will be assigned a 1 and anything outside will be a 0 in terms of the image data.
                                                     # Look at the inRange documentation for openCV for instructions on how to use this image
-                                                    # To display your result so far, comment everything below this point and use the "imshow" function. Usage of this function can be found in the OpenCV documentation.
+    #combined_mask = cv2.bitwiseOr(mask1,mask2)                                                # To display your result so far, comment everything below this point and use the "imshow" function. Usage of this function can be found in the OpenCV documentation.
                                                     
-    filtered = cv2.morphologyEx(None, None, None)   # Now filter out all the noise in your image using the kernel specified at the top of your code. You will want to dilate and close the model. 
+    filtered = cv2.morphologyEx(binary_image, cv2.MORPH_OPEN, kernel)   # Now filter out all the noise in your image using the kernel specified at the top of your code. You will want to dilate and close the model. 
                                                     # There is a morphologyEx operation that does both of these things. Experiment with different kernel sizes and morphology operations to see how your image gets filtered
                                                     # To display your result so far, comment everything below this point and use the "imshow" function. Usage of this function can be found in the OpenCV documentation.
                                                     
                                                     # At this point you will have a nice 'mask' showing your object. Feel free to take things further using the contours function and starting to research methods of doing distance and angle measurements to your identified objects!
                                                     
-    return None, None                               # Return the information you want to return (This could be the filtered image, the binary image, the distance to objects or angle to objects. Whatever your program needs at the current time.)
+    return binary_image, filtered                               # Return the information you want to return (This could be the filtered image, the binary image, the distance to objects or angle to objects. Whatever your program needs at the current time.)
 
 
 
@@ -72,25 +92,25 @@ if __name__ == "__main__":
 
     while True:                                     # This would normally be a really bad idea but we have 2 break statements in this loop that allow it to exit.
 
-        key = cv2.waitKey(None)                     # This function gives you the ability to add a small delay (in miliseconds) and it will try to detect you pressing a keyboard key. (e.g. an 'a' or a 'h')
+        key = cv2.waitKey(1)                     # This function gives you the ability to add a small delay (in miliseconds) and it will try to detect you pressing a keyboard key. (e.g. an 'a' or a 'h')
         ret, frame = cap.read()                     # ret is a boolean that returns True when an image was successfully returned and False when it failed to read an image.
         if not ret:
             break
             
         start = time.time()                                         # Using the time library to calculate framerate and show performance
-        None = get_frame(frame)                                     # Return the frame
-        None, None = find_objects(hsv_frame, frame)                 # Use the frame to find objects
-        None = 1/(time.time() - start)                              # Just framerate things
-        cv2.putText(frame, 'Framerate: %05.3f' %(Framerate) ,       # Draw the framerate on the original image
-        (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)   
+        hsv_frame = get_frame(frame)                                     # Return the frame
+        binary, fil_img = find_objects(hsv_frame, frame)                 # Use the frame to find objects
+        #None = 1/(time.time() - start)                              # Just framerate things
+        #cv2.putText(frame, 'Framerate: %05.3f' %(Framerate) ,       # Draw the framerate on the original image
+        #(20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)   
 
-        # cv2.imshow('Orig_img',frame)              # Using imshow to show stuff
+        cv2.imshow('Orig_img',frame)              # Using imshow to show stuff
         # cv2.imshow('hsv_img' ,hsv_frame)
-        # cv2.imshow('binary', binary_image)
-        # cv2.imshow('filtered', filtered)
+        cv2.imshow('binary', binary)
+        cv2.imshow('filtered', fil_img)
 
 
-        if cv2.waitKey(5) == ord('q'):
+        if cv2.waitKey(1) == ord('q'):
             break
     
     cv2.destroyAllWindows()                         # Destroy the windows at the end of your code for cleanup.
