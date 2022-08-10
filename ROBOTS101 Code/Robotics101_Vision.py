@@ -8,7 +8,7 @@ import imutils
 # Wherever it says "None" the intention is for you to fill in your own values and names :)
 
 
-kernel = np.ones((None,None))                       # Define variable for image noise filtering (covered more later)
+kernel = np.ones((5,5))                       # Define variable for image noise filtering (covered more later)
 
 
 with picamera.PiCamera() as camera:                 # Start up the picamera using the PiCamera library. For pi4s this may be a bit out of date and the libcamera library is potentially better. For the 3B+ Pis we are using they're great.
@@ -36,10 +36,10 @@ def get_frame(frame):
     frame = cv2.rotate(frame, None)                 # Use this function if you want to rotate the image a certain way
                                                     # None is the OpenCV code for rotating an image. See their cv2.rotatate documentation.
 
-    hsv_frame = cv2.cvtColor(frame, None)           # Change the colour space using the cvtColor function
-                                                    # <Insert OpenCV colour code for converstion>
+    hsv_frame = cv2.cvtColor(frame, cv.COLOR_BGR2HSV)           # Change the colour space using the cvtColor function
+                                                                # <Insert OpenCV colour code for converstion>
 
-    return None                                     # Return both the frame and the HSV_frame. You only need the original frame if you intend to draw on it (like bounding boxes, frame rates, etc.)
+    return hsv_frame                                    # Return both the frame and the HSV_frame. You only need the original frame if you intend to draw on it (like bounding boxes, frame rates, etc.)
 
 
 def find_objects(hsv_frame, frame=None):
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     while True:                                     # This would normally be a really bad idea but we have 2 break statements in this loop that allow it to exit.
 
-        key = cv2.waitKey(None)                     # This function gives you the ability to add a small delay (in miliseconds) and it will try to detect you pressing a keyboard key. (e.g. an 'a' or a 'h')
+        key = cv2.waitKey(5000)                     # This function gives you the ability to add a small delay (in miliseconds) and it will try to detect you pressing a keyboard key. (e.g. an 'a' or a 'h')
         ret, frame = cap.read()                     # ret is a boolean that returns True when an image was successfully returned and False when it failed to read an image.
         if not ret:
             break
