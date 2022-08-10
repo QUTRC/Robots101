@@ -33,10 +33,10 @@ def get_frame(frame):
 
     frame = cv2.GaussianBlur(frame, (3,3),0)        # Blur frame to decrease sharp edges
 
-    frame = cv2.rotate(frame, None)                 # Use this function if you want to rotate the image a certain way
+    # frame = cv2.rotate(frame, None)                 # Use this function if you want to rotate the image a certain way
                                                     # None is the OpenCV code for rotating an image. See their cv2.rotatate documentation.
 
-    hsv_frame = cv2.cvtColor(frame, None)           # Change the colour space using the cvtColor function
+    hsv_frame = cv2.cvtColor(frame, cv.COLOR_BGR2HSV)           # Change the colour space using the cvtColor function
                                                     # <Insert OpenCV colour code for converstion>
 
     return None                                     # Return both the frame and the HSV_frame. You only need the original frame if you intend to draw on it (like bounding boxes, frame rates, etc.)
