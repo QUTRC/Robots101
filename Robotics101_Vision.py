@@ -95,3 +95,6 @@ if __name__ == "__main__":
     
     cv2.destroyAllWindows()                         # Destroy the windows at the end of your code for cleanup.
     cap.release()                                   # Release the camera object.
+    
+    https://automaticaddison.com/how-to-set-up-real-time-video-using-opencv-on-raspberry-pi-4/
+        
