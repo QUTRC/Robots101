@@ -4,28 +4,24 @@ import time
 import picamera
 from math import atan,sin,cos,pi,floor
 import imutils
+from picamera import Picamera, colour
 
-# Wherever it says "None" the intention is for you to fill in your own values and names :)
+# --------------------------------------------------------------
 
-
-kernel = np.ones((None,None))                       # Define variable for image noise filtering (covered more later)
-
+kernel = np.ones((4,4))                       # Define variable for image noise filtering (covered more later)
 
 with picamera.PiCamera() as camera:                 # Start up the picamera using the PiCamera library. For pi4s this may be a bit out of date and the libcamera library is potentially better. For the 3B+ Pis we are using they're great.
-    camera.resolution = (640, 480)                  # Currently the only setting I'm changing. With weaker/stronger pis you may have to decrease or increase this. 
-                                                    # This performance seems to be nice for a Raspberry Pi 3b+
-
+    camera.resolution = (1280, 720)                  # Currently the only setting I'm changing. With weaker/stronger pis you may have to decrease or increase this. 
 
 def cam_setup():
-    '''This is a little funtion that initialises the camera object. 
-    This is where you change all of your camera settings such as forcing an image width and height in this case. 
-    Look at the OpenCV documentation for the VideoCapture functionality if you wish to change more stuff and you can put it in here
-    '''
     cap = cv2.VideoCapture(0)                       # Connect to camera 0, this is the camera slot you plugged the camera into
     cap.set(3,320)                                  # set width of the image to 320
     cap.set(4,240)                                  # set the height to 240
 
     return cap                                      # Return the camera object to use with the rest of the code.
+# OpenCV - does it display the output feed? (Ask club members)
+
+# -------------------------------------------------------------
 
 def get_frame(frame):
     '''This function gets passed a frame, and prepares it to be blurred and put into the correct colour space. 
@@ -83,15 +79,21 @@ if __name__ == "__main__":
         None = 1/(time.time() - start)                              # Just framerate things
         cv2.putText(frame, 'Framerate: %05.3f' %(Framerate) ,       # Draw the framerate on the original image
         (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)   
+        
+-----------------------------------------------------------------------------
 
-        # cv2.imshow('Orig_img',frame)              # Using imshow to show stuff
+# Uncommenting this code will return video feeds:
+        # cv2.imshow('Orig_img',frame)             
         # cv2.imshow('hsv_img' ,hsv_frame)
         # cv2.imshow('binary', binary_image)
         # cv2.imshow('filtered', filtered)
-
+        
+----------------------------------------------------------------------------
 
         if cv2.waitKey(5) == ord('q'):
             break
     
     cv2.destroyAllWindows()                         # Destroy the windows at the end of your code for cleanup.
     cap.release()                                   # Release the camera object.
+    
+    
