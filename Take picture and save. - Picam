@@ -1,0 +1,24 @@
+#Picam takes a picture and saves to directory.
+#Source code started: 6th Sept 2022 created by TheWarlock27
+import cv2
+import numpy as np
+import time
+import picamera #Picam info: The sensor itself has a native resolution of 5 megapixel, and has a fixed focus lens onboard. In terms of still images, the camera is capable of 2592 x 1944 pixel static images, and also supports 1080p @ 30fps, 720p @ 60fps and 640x480p 60/90 video recording.
+from math import atan,sin,cos,pi,floor
+import imutils
+from picamera.array import PiRGBArray
+# ---------------------------------------------------------------- Experimental Code: Lines 1 to 27, 
+cap = cv2.VideoCapture(0)
+#Takes a picture and stores picture on computer file
+from picamera import PiCamera
+camera = PiCamera()
+camera.resolution = (1280, 720)
+time.sleep(2)
+camera.capture("/home/qutrc/Desktop/Warlock27/Robots101/img.jpg")
+print("Done.")
+
+
+
+
+
+
