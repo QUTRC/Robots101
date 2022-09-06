@@ -7,8 +7,23 @@ from math import atan,sin,cos,pi,floor
 import imutils
 from picamera import Picamera, colour
 from picamera.array import PiRGBArray
-# ---------------------------------------------------------------- Experimental Code: Lines 1 to 27, 
+
+#-------------------------------------------------------------------------- Complete code: Picam Video Livefeed - By TheWarlock27
+# Code to display picam as a video stream, does not save, is a raw feed. - Source code started: 4th Sept 2022 created by TheWarlock27
+
+import cv2
+import numpy as np
+import time
+import picamera #Picam info: The sensor itself has a native resolution of 5 megapixel, and has a fixed focus lens onboard. In terms of still images, the camera is capable of 2592 x 1944 pixel static images, and also supports 1080p @ 30fps, 720p @ 60fps and 640x480p 60/90 video recording.
+from math import atan,sin,cos,pi,floor
+import imutils
+from picamera import PiCamera
+from picamera.array import PiRGBArray
+
+#camera = PiCamera()
 cap = cv2.VideoCapture(0)
+#camera.resolution = (1280, 720)
+#time.sleep(2)
 
 if (cap.isOpened()== False):  #Check if camera opened successfully
   print("Error opening video stream or file")
@@ -16,30 +31,17 @@ if (cap.isOpened()== False):  #Check if camera opened successfully
 while(cap.isOpened()):   #Read until video is completed
   ret, frame = cap.read()   #Capture frame-by-frame
   if ret == True:
-    cv2.imshow('Frame',frame)      # Display the resulting frame
-  if cv2.waitKey(25) & 0xFF == ord('q'):      # Press lowercase Q on keyboard to exit
-      break
+    cv2.imshow('Stream',frame)      # Display the resulting frame
+    print ("streaming")
+    if cv2.waitKey(25) & 0xFF == ord('q'):      # Press lowercase Q on keyboard to exit
+        break
   else: 
-      break     #Break the loop
+    print("No Feed")
+    break     #Break the loop
 
 cap.release()  # When everything done, release the video capture object
 cv2.destroyAllWindows()  # Closes all the frames
 
-#-------------------------------------------------------------------------- Complete code: lines 1 to 9, 29 to 42 Takes a Picam picture - By TheWarlock27
-
-Shows a live stream of a Picam in python:
-from picamera import PiCamera
-import cv2
-
-camera = PiCamera()
-rawCapture = PiRGBArray(camera)
-camera.resolution = (2592, 1944)
-time.sleep(200)
-camera.capture(rawCapture, format="bgr")
-stream = rawCapture.array
-cv2.imshow("live_feed", stream)      #shows the / returns the captured video / frames
-cv2.waitKey(0) 
-cv2.destroyAllWindows() 
 
 
 #----------------------------------------------------------------------------- #takes a picture and saves it
