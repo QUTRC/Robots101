@@ -1,5 +1,4 @@
-#Picam takes a picture and saves to directory.
-#Source code started: 6th Sept 2022 created by TheWarlock27
+# Code to display picam as a video stream, does not save, is a raw feed. - Source code started: 4th Sept 2022 created by TheWarlock27
 import cv2
 import numpy as np
 import time
@@ -14,10 +13,8 @@ from picamera import PiCamera
 camera = PiCamera()
 camera.resolution = (1280, 720)
 time.sleep(2)
-camera.capture("/home/qutrc/Desktop/Warlock27/Robots101/img.jpg")
+camera.capture("/home/qutrc/Desktop/Warlock27/Robots101/TheWarlock.jpg")
 print("Done.")
-
-
 
 
 
